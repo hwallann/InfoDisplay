@@ -6,12 +6,21 @@ namespace InfoDisplay.Client
 {
     public class ServerAuthenticationStateProvider : AuthenticationStateProvider
     {
+        private readonly HttpClient _httpClient;
+
+        public ServerAuthenticationStateProvider(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            // Currently, this returns fake data
-            // In a moment, we'll get real data from the server
-            var claim = new Claim(ClaimTypes.Name, "Fake user");
-            var identity = new ClaimsIdentity(new[] { claim }, "serverauth");
+            var userInfo = await _httpClient.GetJsonAsync<UserInfo>("user");
+
+            var identity = userInfo.IsAuthenticated
+                ? new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userInfo.Name) }, "serverauth")
+                : new ClaimsIdentity();
+
             return new AuthenticationState(new ClaimsPrincipal(identity));
         }
     }

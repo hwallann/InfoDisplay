@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <button class="checkout-button btn btn-warning" type="submit">
+        <button class="checkout-button btn btn-warning" type="submit" disabled="@isSubmitting">
             Place order
         </button>
 
@@ -25,12 +25,37 @@
 </div>
 
 @code {
+    
+    bool isSubmitting;
+
+    protected async override Task OnInitializedAsync()
+    {
+        isSubmitting = false;
+    }
+
     async Task PlaceOrder()
     {
-        var newOrderId = await HttpClient.PostJsonAsync<int>("orders", order);
-        
-        OrderState.ResetOrder();
+        isSubmitting = true;
 
-        NavigationManager.NavigateTo($"myorders/{newOrderId}");
+        try
+        {
+            var newOrderId = await HttpClient.PostJsonAsync<int>("orders", order);
+            
+            OrderState.ResetOrder();
+
+            NavigationManager.NavigateTo($"myorders/{newOrderId}");
+        }
+        catch (Exception e)
+        {
+            Console.log("Error when placing order")
+            System.Console.WriteLine("Error when placing order")
+            Console.log(e.Message)
+            System.Console.WriteLine(e.Message)
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+
     }
 }

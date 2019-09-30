@@ -1,7 +1,7 @@
 @page "/checkout"
 @inject OrderState OrderState
 @inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
+@inject IUriHelper UriHelper
 @inject IJSRuntime JSRuntime
 
 <div class="main">
@@ -47,7 +47,7 @@
             await LocalStorage.SetAsync(JSRuntime, "currentorder", OrderState.Order);
             // The server won't accept orders from unauthenticated users, so avoid
             // an error by making them log in at this point
-            NavigationManager.NavigateTo("user/signin?redirectUri=/checkout", true);
+            UriHelper.NavigateTo("user/signin?redirectUri=/checkout", true);
         }
 
         // Try to recover any temporary saved order
@@ -62,7 +62,7 @@
             else
             {
                 // There's nothing check out - go to home
-                NavigationManager.NavigateTo("");
+                UriHelper.NavigateTo("");
             }
         }
 
@@ -75,18 +75,18 @@
 
         try
         {
-            var newOrderId = await HttpClient.PostJsonAsync<int>("orders", order);
+            var newOrderId = await HttpClient.PostJsonAsync<int>("orders", OrderState.Order);
             
             OrderState.ResetOrder();
 
-            NavigationManager.NavigateTo($"myorders/{newOrderId}");
+            UriHelper.NavigateTo($"myorders/{newOrderId}");
         }
         catch (Exception e)
         {
-            Console.log("Error when placing order")
-            System.Console.WriteLine("Error when placing order")
-            Console.log(e.Message)
-            System.Console.WriteLine(e.Message)
+            Console.WriteLine("Error when placing order");
+            System.Console.WriteLine("Error when placing order");
+            Console.WriteLine(e.Message);
+            System.Console.WriteLine(e.Message);
         }
         finally
         {

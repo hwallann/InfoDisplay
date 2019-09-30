@@ -1,7 +1,6 @@
 ﻿@page "/"
 @inject HttpClient HttpClient
 @inject OrderState OrderState
-@inject NavigationManager NavigationManager
 
 <div class="main">
     <ul class="pizza-cards">
@@ -47,10 +46,10 @@
     </div>
 </div>
 
-@if (showingConfigureDialog)
+@if (OrderState.ShowingConfigureDialog)
 {
     <ConfigurePizzaDialog
-        Pizza="OrderState.configuringPizza"
+        Pizza="OrderState.ConfiguringPizza"
         OnCancel="OrderState.CancelConfigurePizzaDialog"
         OnConfirm="OrderState.ConfirmConfigurePizzaDialog" />
 }

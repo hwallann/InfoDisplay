@@ -24,7 +24,7 @@ namespace InfoDisplay.Server
         public async Task<ActionResult<List<OrderWithStatus>>> GetOrders()
         {
             var orders = await _db.Orders
-                // .Where(o => o.UserId == GetUserId())
+                .Where(o => o.UserId == GetUserId())
                 .Include(o => o.DeliveryLocation)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Special)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Toppings).ThenInclude(t => t.Topping)
@@ -39,7 +39,7 @@ namespace InfoDisplay.Server
         {
             var order = await _db.Orders
                 .Where(o => o.OrderId == orderId)
-                // .Where(o => o.UserId == GetUserId())
+                .Where(o => o.UserId == GetUserId())
                 .Include(o => o.DeliveryLocation)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Special)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Toppings).ThenInclude(t => t.Topping)

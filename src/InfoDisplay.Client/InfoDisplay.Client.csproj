@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\InfoDisplay.Shared\InfoDisplay.Shared.csproj" />
     <ProjectReference Include="..\InfoDisplay.ComponentsLibrary\InfoDisplay.ComponentsLibrary.csproj" />
+    <ProjectReference Include="..\InfoComponents\InfoComponents.csproj" />
   </ItemGroup>
   
 </Project>

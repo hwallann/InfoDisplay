@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Graph;
 
 namespace InfoDisplay.Server
 {
@@ -40,16 +45,38 @@ namespace InfoDisplay.Server
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddCookie()
-                .AddTwitter(twitterOptions =>
+                .AddMicrosoftAccount(microsoftOptions =>
                 {
-                    twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-                    twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-                    twitterOptions.Events.OnRemoteFailure = (context) =>
+                    microsoftOptions.ClientId = "e143a0a2-9c72-40b4-9bc5-f4b5ceb50ccb";
+                    microsoftOptions.ClientSecret = "]CUIpyZV0g7DTp-gRg+[jItHMTlWC7C8";
+                    microsoftOptions.Events.OnRemoteFailure = (context) =>
                     {
                         context.HandleResponse();
                         return context.Response.WriteAsync("<script>window.close();</script>");
                     };
+                    microsoftOptions.SaveTokens = true;
+                    microsoftOptions.Scope.Clear();
+                    microsoftOptions.Scope.Add("https://graph.microsoft.com/user.read");
+                    microsoftOptions.Scope.Add("https://graph.microsoft.com/mail.read");
+                    microsoftOptions.Scope.Add("offline_access");
+                    Console.WriteLine("****************************************");
+                    Console.WriteLine("****************************************");
+                    foreach(var item in microsoftOptions.Scope)
+                        Console.WriteLine(item);
+                    Console.WriteLine("****************************************");
+                    Console.WriteLine("****************************************");
+                    
                 });
+                // .AddTwitter(twitterOptions =>
+                // {
+                //     twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                //     twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                //     twitterOptions.Events.OnRemoteFailure = (context) =>
+                //     {
+                //         context.HandleResponse();
+                //         return context.Response.WriteAsync("<script>window.close();</script>");
+                //     };
+                // });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
